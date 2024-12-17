@@ -1,7 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { NextAuthOptions } from "next-auth"
-import { User } from "@/types/user"
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -12,22 +11,45 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // Add your authentication logic here
-        // Example:
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, {
           method: 'POST',
           body: JSON.stringify(credentials),
           headers: { "Content-Type": "application/json" }
         })
         const result = await res.json()
-        const user = result.data
-        if (res.ok && user) {
-          return user
+        
+        if (res.ok && result.status) {
+          return {
+            id: result.data.token as string,
+            email: result.data.email as string,
+            name: result.data.userName as string,
+            role: result.data.role as string,
+            language: result.data.language as number,
+            token: result.data.token as string
+          }
         }
         return null
       }
     })
   ],
+  callbacks: {
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.role = user.role as string
+        token.language = user.language as number
+        token.accessToken = user.token as string
+      }
+      return token
+    },
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.role = token.role as string
+        session.user.language = token.language as number
+        session.accessToken = token.accessToken as string
+      }
+      return session
+    }
+  },
   pages: {
     signIn: '/auth/signin',
   },
