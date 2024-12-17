@@ -1,13 +1,23 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signIn } from "next-auth/react"
+import { useSearchParams } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 
 export default function SigninWithPassword() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
+
+  useEffect(() => {
+    if (error === 'CredentialsSignin') {
+      toast.error('Invalid email or password')
+    }
+  }, [error])
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
