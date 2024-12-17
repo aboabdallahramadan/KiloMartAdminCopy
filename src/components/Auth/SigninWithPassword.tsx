@@ -1,35 +1,31 @@
 "use client";
 import React, { useState } from "react";
-import { signIn } from 'next-auth/react';
-import { toast } from "react-toastify";
-
+import { signIn } from "next-auth/react"
 
 
 export default function SigninWithPassword() {
-  const [data, setData] = useState({
-    remember: false,
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const email = (e.target as any).email.value;
-    const password = (e.target as any).password.value;
-
-    // Use the next-auth `signIn` function
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-    });
-    console.log(result)
-
-    if (result?.error) {
-      toast.error("Sign-in Failed")
-    } else {
-      toast.success('Sign-in successful!');
-      
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === "email") {
+      setEmail(value);
+    } else if (name === "password") {
+      setPassword(value);
     }
   };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const result = await signIn("credentials", {
+      email: email,
+      password: password,
+      redirect: true,
+      callbackUrl: "/dashboard"
+    })
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -47,6 +43,7 @@ export default function SigninWithPassword() {
             name="email"
             className="w-full rounded-lg border border-stroke bg-transparent py-[15px] pl-6 pr-11 font-medium text-dark outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:focus:border-primary"
             required
+            onChange={handleChange}
           />
 
           <span className="absolute right-4.5 top-1/2 -translate-y-1/2">
@@ -84,6 +81,7 @@ export default function SigninWithPassword() {
             autoComplete="password"
             className="w-full rounded-lg border border-stroke bg-transparent py-[15px] pl-6 pr-11 font-medium text-dark outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:focus:border-primary"
             required
+            onChange={handleChange}
           />
 
           <span className="absolute right-4.5 top-1/2 -translate-y-1/2">
