@@ -116,7 +116,7 @@ const ProviderProducts = () => {
         <h2 className="text-2xl font-bold text-dark dark:text-white">Provider&lsquo;s Products</h2>
         
         <ClickOutside onClick={() => setIsOpen(false)}>
-          <div className="relative">
+          <div className="relative z-999">
             <button
               className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary transition-colors duration-300"
               onClick={() => setIsOpen(!isOpen)}
