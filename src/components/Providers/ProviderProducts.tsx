@@ -197,7 +197,7 @@ const ProviderProducts = () => {
         <div className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <img 
-              src={`${process.env.NEXT_PUBLIC_API_URL_MAIN}/${selectedProduct.productImageUrl}`} 
+              src={`${selectedProduct.productImageUrl}`} 
               alt={selectedProduct.productName} 
               className="w-full md:w-1/2 h-64 object-cover rounded-lg"
             />
